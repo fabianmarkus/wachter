@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fabian Wachter</title>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --text: #f0f0f0;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem 1.25rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Avenir Medium", "Avenir", "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
+      font-weight: 500;
+    }
+
+    .foto {
+      display: block;
+      max-width: 100%;
+      /* Platz für den Namen unter dem Foto lassen */
+      max-height: calc(100vh - 8rem);
+      object-fit: contain;
+    }
+
+    .name {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <img class="foto" id="foto" alt="Fotografie von Fabian Wachter">
+  <p class="name">Fabian Wachter</p>
+
+  <script>
+    // Dateinamen der 5 Fotos (liegen im Ordner "images" neben dieser Datei)
+    const fotos = [
+      "images/foto-1.jpg",
+      "images/foto-2.jpg",
+      "images/foto-3.jpg",
+      "images/foto-4.jpg",
+      "images/foto-5.jpg"
+    ];
+
+    const zufall = fotos[Math.floor(Math.random() * fotos.length)];
+    document.getElementById("foto").src = zufall;
+  </script>
+
+</body>
+</html>
