@@ -31,7 +31,6 @@
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      cursor: pointer;
     }
 
     .bilder img {
@@ -60,18 +59,40 @@
       text-decoration: none;
     }
 
-    /* Name und Kontaktdaten */
+    /* Name und Navigation */
+
+    .titelzeile {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      margin-top: 14px;
+    }
 
     .name {
+      margin: 0;
       font-size: 32px;
     }
+
+    .navigation {
+      display: flex;
+      justify-content: flex-end;
+      gap: 32px;
+      margin-left: auto;
+      font-family: "Avenir Medium", Avenir, "Avenir Next", sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* Kontaktdaten */
 
     .kontakt {
       margin-top: 48px;
       font-size: 16px;
     }
 
-    /* Landingpage und Coverbilder */
+    /* Landingpage */
 
     .cover {
       width: 50%;
@@ -87,28 +108,6 @@
       width: 100%;
       height: auto;
       object-fit: contain;
-    }
-
-    /* Ansicht der zufälligen Coverbilder */
-
-    .zufallsansicht {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      max-width: none;
-      max-height: none;
-      margin: 0;
-      padding: 24px;
-      border: 0;
-      background: #ffffff;
-      cursor: pointer;
-    }
-
-    .zufallsansicht[open] {
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     [hidden] {
@@ -131,20 +130,27 @@
 
   <main class="container" id="website" hidden>
 
-    <div class="bilder"
-         role="button"
-         tabindex="0"
-         aria-label="Zufälliges Coverbild öffnen"
-         onclick="openCover()"
-         onkeydown="handleBildKey(event)">
+    <div class="bilder">
       <img src="./images/foto-1.jpg" alt="photo 1">
       <img src="./images/foto-2.jpg" alt="photo 2">
     </div>
 
-    <p class="name">
-      <a href="https://www.instagram.com/fabian.markus/"
-         target="_blank" rel="noopener noreferrer">fabian wachter</a>
-    </p>
+    <div class="titelzeile">
+
+      <p class="name">
+        <a href="https://www.instagram.com/fabian.markus/"
+           target="_blank" rel="noopener noreferrer">fabian wachter</a>
+      </p>
+
+      <nav class="navigation" aria-label="Navigation">
+        <a href="./projects.html">projects</a>
+        <a href="./pdf/portfolio.pdf"
+           target="_blank" rel="noopener noreferrer">portfolio</a>
+        <a href="./pdf/cv.pdf"
+           target="_blank" rel="noopener noreferrer">cv</a>
+      </nav>
+
+    </div>
 
     <p class="kontakt">
       viktoria-luise-platz 3<br>
@@ -155,19 +161,6 @@
 
   </main>
 
-  <!-- Zufälliges Coverbild -->
-
-  <dialog class="zufallsansicht" id="zufallsansicht"
-          aria-label="Zufälliges Coverbild"
-          onclick="closeCover()">
-
-    <button class="cover" type="button"
-            aria-label="Coverbild schließen">
-      <img id="coverbild" alt="Cover">
-    </button>
-
-  </dialog>
-
   <script>
     // Bestehende Website öffnen
     function openWebsite() {
@@ -175,27 +168,10 @@
       document.getElementById("website").hidden = false;
     }
 
-    // Zufälliges Coverbild auswählen und anzeigen
-    function openCover() {
-      const zufallszahl = Math.floor(Math.random() * 5) + 1;
-
-      document.getElementById("coverbild").src =
-        "./images/cover-" + zufallszahl + ".jpg";
-
-      document.getElementById("zufallsansicht").showModal();
-    }
-
-    // Coverbild schließen
-    function closeCover() {
-      document.getElementById("zufallsansicht").close();
-    }
-
-    // Bedienung über die Tastatur
-    function handleBildKey(event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openCover();
-      }
+    // Bei Rückkehr von der Projektübersicht
+    // das Deckblatt überspringen
+    if (window.location.hash === "#website") {
+      openWebsite();
     }
   </script>
 
