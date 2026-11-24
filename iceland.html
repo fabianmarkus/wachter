@@ -29,18 +29,22 @@
     }
 
     .bilder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-    }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
-    .bilder img {
-      display: block;
-      width: calc((100% - 12px) / 2);
-      height: auto;
-      object-fit: contain;
-    }
+.bilder img {
+  display: block;
+  flex: 0 0 auto;
+  width: auto;
+  height: 500px;
+  object-fit: contain;
+}
 
     .titelzeile {
       display: flex;
