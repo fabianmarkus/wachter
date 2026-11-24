@@ -28,16 +28,17 @@
     }
 
     .bilder {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
       gap: 12px;
-      align-items: start;
+      align-items: flex-start;
     }
 
-    img {
+    .bilder img {
       display: block;
-      width: 100%;
+      width: calc((100% - 12px) / 2);
       height: auto;
+      min-width: 0;
+      object-fit: contain;
     }
 
     p {
@@ -53,14 +54,12 @@
 <body>
 
   <main class="container">
-
     <div class="bilder">
-      <img src="images/foto-1.jpeg" alt="Fotografie 1">
-      <img src="images/foto-2.jpeg" alt="Fotografie 2">
+      <img src="./images/foto-1.jpeg" alt="Fotografie 1">
+      <img src="./images/foto-2.jpeg" alt="Fotografie 2">
     </div>
 
     <p>fabian wachter</p>
-
   </main>
 
 </body>
