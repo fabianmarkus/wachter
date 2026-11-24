@@ -1,53 +1,67 @@
+
 <!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fabian Wachter</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       min-height: 100vh;
       margin: 0;
+      padding: 24px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      padding: 24px;
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .bilder {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: start;
     }
 
     img {
       display: block;
-      max-width: 100%;
-      max-height: 75vh;
-      object-fit: contain;
+      width: 100%;
+      height: auto;
     }
 
     p {
-      margin: 0;
+      margin: 14px 0 0;
       font-family: "Avenir Medium", Avenir, "Avenir Next", sans-serif;
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 500;
+      text-align: left;
     }
   </style>
 </head>
+
 <body>
-  <img id="foto" alt="">
-  <p>fabian wachter</p>
 
-  <script>
-    const fotos = [
-      "foto-1.jpg",
-      "foto-2.jpg",
-      "foto-3.jpg",
-      "foto-4.jpg",
-      "foto-5.jpg"
-    ];
+  <main class="container">
 
-    document.getElementById("foto").src =
-      fotos[Math.floor(Math.random() * fotos.length)];
-  </script>
+    <div class="bilder">
+      <img src="images/foto-1.jpeg" alt="Fotografie 1">
+      <img src="images/foto-2.jpeg" alt="Fotografie 2">
+    </div>
+
+    <p>fabian wachter</p>
+
+  </main>
+
 </body>
 </html>
