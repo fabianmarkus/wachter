@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="de">
 <head>
@@ -27,15 +28,6 @@
       width: 100%;
     }
 
-    .bildzaehler,
-    .zurueck {
-      font-size: 16px;
-    }
-
-    .bildzaehler {
-      margin: 0 0 10px;
-    }
-
     .bilder {
       display: flex;
       flex-direction: row;
@@ -50,6 +42,37 @@
 
     .bilder::-webkit-scrollbar {
       display: none;
+    }
+
+    .bild {
+      position: relative;
+      flex: 0 0 auto;
+      padding-top: calc(1.2em + 10px);
+    }
+
+    .bild-info {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 16px;
+      line-height: 1.2;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .bild-info-titel {
+      text-align: right;
+    }
+
+    @media (hover: hover) {
+      .bild img:hover + .bild-info {
+        visibility: visible;
+      }
     }
 
     .bilder img {
@@ -74,6 +97,7 @@
     }
 
     .zurueck {
+      font-size: 16px;
       color: inherit;
       text-decoration: none;
     }
@@ -101,6 +125,8 @@
 
     .bild-overlay-zaehler {
       flex: 0 0 auto;
+      align-self: center;
+      width: var(--overlay-bildbreite, 100%);
       margin: 0;
       font-size: 16px;
     }
@@ -125,6 +151,8 @@
     .bild-overlay-fusszeile {
       display: flex;
       flex: 0 0 auto;
+      align-self: center;
+      width: var(--overlay-bildbreite, 100%);
       justify-content: space-between;
       align-items: baseline;
       gap: 24px;
@@ -146,8 +174,6 @@
 <body>
 
   <main class="container">
-
-    <p class="bildzaehler" id="bildZaehler">1/21</p>
 
     <div class="bilder">
       <img src="./images/iceland-1.jpg" alt="Iceland 1">
@@ -196,30 +222,57 @@
   <script>
     const bilderReihe = document.querySelector(".bilder");
     const projektBilder = Array.from(bilderReihe.querySelectorAll("img"));
-    const zaehler = document.getElementById("bildZaehler");
+
     const overlay = document.getElementById("bildOverlay");
     const overlayFoto = document.getElementById("bildOverlayFoto");
     const overlayZaehler = document.getElementById("bildOverlayZaehler");
     const overlayWerktitel = document.getElementById("bildOverlayWerktitel");
 
-    function aktualisiereZaehler() {
-      const linkerRand = bilderReihe.getBoundingClientRect().left;
-      const rechterRand = linkerRand + bilderReihe.clientWidth;
+    // Nummerierung und Werktitel für jedes Bild erstellen
 
-      const erstesSichtbaresBild = projektBilder.find((bild) => {
-        const bildRand = bild.getBoundingClientRect();
-        return bildRand.right > linkerRand + 1 && bildRand.left < rechterRand;
+    projektBilder.forEach((bild, index) => {
+      const nummer = index + 1;
+
+      const bildContainer = document.createElement("div");
+      bildContainer.className = "bild";
+
+      bild.before(bildContainer);
+      bildContainer.appendChild(bild);
+
+      const bildInfo = document.createElement("div");
+      bildInfo.className = "bild-info";
+
+      const bildNummer = document.createElement("span");
+      bildNummer.textContent = `${nummer}/${projektBilder.length}`;
+
+      const bildTitel = document.createElement("span");
+      bildTitel.className = "bild-info-titel";
+      bildTitel.textContent = bild.alt;
+
+      bildInfo.appendChild(bildNummer);
+      bildInfo.appendChild(bildTitel);
+
+      bildContainer.appendChild(bildInfo);
+
+      // Vollbildmodus öffnen
+
+      bild.addEventListener("click", () => {
+        overlayFoto.src = bild.src;
+        overlayFoto.alt = bild.alt;
+
+        overlayZaehler.textContent = `${nummer}/${projektBilder.length}`;
+        overlayWerktitel.textContent = bild.alt;
+
+        overlay.classList.add("aktiv");
+        overlay.setAttribute("aria-hidden", "false");
+
+        document.body.style.overflow = "hidden";
+
+        aktualisiereOverlayBreite();
       });
-
-      if (erstesSichtbaresBild) {
-        const nummer = projektBilder.indexOf(erstesSichtbaresBild) + 1;
-        zaehler.textContent = `${nummer}/${projektBilder.length}`;
-      }
-    }
-
-    bilderReihe.addEventListener("scroll", aktualisiereZaehler, {
-      passive: true
     });
+
+    // Vertikales Mausrad in horizontales Scrollen umwandeln
 
     bilderReihe.addEventListener("wheel", (event) => {
       if (!event.ctrlKey && Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
@@ -230,24 +283,28 @@
       passive: false
     });
 
-    window.addEventListener("resize", aktualisiereZaehler);
+    // Texte im Vollbildmodus an den Bildkanten ausrichten
 
-    projektBilder.forEach((bild) => {
-      bild.addEventListener("load", aktualisiereZaehler);
+    function aktualisiereOverlayBreite() {
+      if (!overlay.classList.contains("aktiv")) {
+        return;
+      }
 
-      bild.addEventListener("click", () => {
-        const nummer = projektBilder.indexOf(bild) + 1;
+      const bildbreite = overlayFoto.getBoundingClientRect().width;
 
-        overlayFoto.src = bild.src;
-        overlayFoto.alt = bild.alt;
-        overlayZaehler.textContent = `${nummer}/${projektBilder.length}`;
-        overlayWerktitel.textContent = bild.alt;
+      if (bildbreite > 0) {
+        overlay.style.setProperty(
+          "--overlay-bildbreite",
+          `${bildbreite}px`
+        );
+      }
+    }
 
-        overlay.classList.add("aktiv");
-        overlay.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-      });
-    });
+    overlayFoto.addEventListener("load", aktualisiereOverlayBreite);
+
+    window.addEventListener("resize", aktualisiereOverlayBreite);
+
+    // Vollbildmodus schließen
 
     function schliesseOverlay() {
       overlay.classList.remove("aktiv");
@@ -262,8 +319,6 @@
         schliesseOverlay();
       }
     });
-
-    aktualisiereZaehler();
   </script>
 
 </body>
