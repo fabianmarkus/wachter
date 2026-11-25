@@ -9,6 +9,7 @@
   <style>
     * {
       box-sizing: border-box;
+      cursor: default !important;
     }
 
     body {
@@ -56,9 +57,9 @@
       left: 0;
       right: 0;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: baseline;
-      gap: 12px;
+      gap: 0.3em;
       font-size: 16px;
       line-height: 1.2;
       visibility: hidden;
@@ -66,7 +67,7 @@
     }
 
     .bild-info-titel {
-      text-align: right;
+      text-align: left;
     }
 
     @media (hover: hover) {
@@ -81,7 +82,6 @@
       width: auto;
       height: 500px;
       object-fit: contain;
-      cursor: zoom-in;
     }
 
     .titelzeile {
@@ -116,7 +116,6 @@
       padding: 24px clamp(16px, 3vw, 40px);
       background: rgba(0, 0, 0, 0.92);
       color: #ffffff;
-      cursor: zoom-out;
     }
 
     .bild-overlay.aktiv {
@@ -207,6 +206,7 @@
   </main>
 
   <div class="bild-overlay" id="bildOverlay" aria-hidden="true">
+
     <p class="bild-overlay-zaehler" id="bildOverlayZaehler"></p>
 
     <div class="bild-overlay-bildbereich">
@@ -217,6 +217,7 @@
       <p class="bild-overlay-projekttitel">iceland</p>
       <p class="bild-overlay-werktitel" id="bildOverlayWerktitel"></p>
     </div>
+
   </div>
 
   <script>
