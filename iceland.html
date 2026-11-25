@@ -13,7 +13,7 @@
     body {
       min-height: 100vh;
       margin: 0;
-      padding: 24px;
+      padding: 24px clamp(16px, 3vw, 40px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -25,7 +25,6 @@
 
     .container {
       width: 100%;
-      max-width: 1000px;
     }
 
     .bilder {
@@ -54,19 +53,30 @@
     }
 
     .titelzeile {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: baseline;
       margin-top: 14px;
     }
 
     .projekttitel {
+      justify-self: start;
       margin: 0;
       font-size: 32px;
     }
 
+    .bildzaehler,
     .zurueck {
       font-size: 16px;
+    }
+
+    .bildzaehler {
+      justify-self: center;
+      margin: 0;
+    }
+
+    .zurueck {
+      justify-self: end;
     }
 
     a {
@@ -136,6 +146,7 @@
 
     <div class="titelzeile">
       <p class="projekttitel">iceland</p>
+      <p class="bildzaehler" id="bildZaehler">1/21</p>
       <a class="zurueck" href="./projects.html">back</a>
     </div>
 
@@ -146,10 +157,38 @@
   </div>
 
   <script>
+    const bilderReihe = document.querySelector(".bilder");
+    const projektBilder = Array.from(bilderReihe.querySelectorAll("img"));
+    const zaehler = document.getElementById("bildZaehler");
     const overlay = document.getElementById("bildOverlay");
     const overlayFoto = document.getElementById("bildOverlayFoto");
 
-    document.querySelectorAll(".bilder img").forEach((bild) => {
+    function aktualisiereZaehler() {
+      const mitteDerAnzeige =
+        bilderReihe.getBoundingClientRect().left + bilderReihe.clientWidth / 2;
+
+      let naechstesBild = 0;
+      let kleinsterAbstand = Infinity;
+
+      projektBilder.forEach((bild, index) => {
+        const bildMitte = bild.getBoundingClientRect().left + bild.offsetWidth / 2;
+        const abstand = Math.abs(mitteDerAnzeige - bildMitte);
+
+        if (abstand < kleinsterAbstand) {
+          kleinsterAbstand = abstand;
+          naechstesBild = index;
+        }
+      });
+
+      zaehler.textContent = `${naechstesBild + 1}/${projektBilder.length}`;
+    }
+
+    bilderReihe.addEventListener("scroll", aktualisiereZaehler);
+    window.addEventListener("resize", aktualisiereZaehler);
+
+    projektBilder.forEach((bild) => {
+      bild.addEventListener("load", aktualisiereZaehler);
+
       bild.addEventListener("click", () => {
         overlayFoto.src = bild.src;
         overlayFoto.alt = bild.alt;
@@ -172,6 +211,8 @@
         schliesseOverlay();
       }
     });
+
+    aktualisiereZaehler();
   </script>
 
 </body>
