@@ -79,6 +79,8 @@
       white-space: nowrap;
     }
 
+    /* Bildpaare */
+
     .bilder {
       display: flex;
       flex: 1 1 auto;
@@ -88,14 +90,40 @@
       min-height: 0;
     }
 
-    .bilder img {
-      display: block;
+    .bild {
       width: calc((100% - 12px) / 2);
+      min-width: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bild img {
+      display: block;
+      width: 100%;
       max-height: 100%;
       height: auto;
-      min-width: 0;
       object-fit: contain;
     }
+
+    /* Bildbeschreibung */
+
+    .bildbeschreibung {
+      margin: 8px 0 0;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      line-height: 1.4;
+      text-align: left;
+      visibility: hidden;
+    }
+
+    .bild:hover .bildbeschreibung,
+    .bild:focus-within .bildbeschreibung {
+      visibility: visible;
+    }
+
+    /* Footer */
 
     .footer {
       display: flex;
@@ -158,6 +186,8 @@
       display: none !important;
     }
 
+    /* Mobile Darstellung */
+
     @media (max-width: 600px) {
       .navigation {
         gap: 20px;
@@ -167,7 +197,7 @@
         gap: 8px;
       }
 
-      .bilder img {
+      .bild {
         width: calc((100% - 8px) / 2);
       }
 
@@ -184,7 +214,8 @@
 
 <body>
 
-  <!-- Deckblatt: Anklicken, um die Website zu öffnen -->
+  <!-- Deckblatt -->
+
   <button
     class="cover"
     id="landingpage"
@@ -196,9 +227,11 @@
   </button>
 
   <!-- Website -->
+
   <main class="container" id="website" hidden>
 
     <nav class="navigation" aria-label="Navigation">
+
       <div class="projects-menu">
         <button
           id="projects-button"
@@ -223,15 +256,37 @@
       <a href="./pdf/cv.pdf" target="_blank" rel="noopener noreferrer">
         cv
       </a>
+
     </nav>
 
-    <!-- Zufällig ausgewähltes Bildpaar -->
+    <!-- Zufälliges Bildpaar mit Bildbeschreibungen -->
+
     <section class="bilder" aria-label="Fotos">
-      <img id="foto-1" alt="photo 1">
-      <img id="foto-2" alt="photo 2">
+
+      <figure class="bild" tabindex="0">
+        <img id="foto-1" alt="">
+        <figcaption
+          class="bildbeschreibung"
+          id="beschreibung-1"
+          aria-hidden="true"
+        ></figcaption>
+      </figure>
+
+      <figure class="bild" tabindex="0">
+        <img id="foto-2" alt="">
+        <figcaption
+          class="bildbeschreibung"
+          id="beschreibung-2"
+          aria-hidden="true"
+        ></figcaption>
+      </figure>
+
     </section>
 
+    <!-- Footer -->
+
     <footer class="footer">
+
       <div class="person">
         <h1 class="name">
           <a
@@ -250,18 +305,23 @@
       <button class="shuffle" type="button" onclick="shufflePhotos()">
         shuffle
       </button>
+
     </footer>
 
   </main>
 
   <script>
+
     // Website öffnen
+
     function openWebsite() {
       document.getElementById("landingpage").hidden = true;
       document.getElementById("website").hidden = false;
     }
 
+
     // Projects-Untermenü öffnen und schließen
+
     function toggleProjects() {
       const button = document.getElementById("projects-button");
       const submenu = document.getElementById("projects-submenu");
@@ -271,10 +331,14 @@
       submenu.hidden = isOpen;
     }
 
+
     // Anzahl der vorhandenen Bildpaare
+
     const anzahlBildpaare = 10;
 
+
     // Bildpaare automatisch anhand der Dateinamen erstellen
+
     const bildpaare = Array.from(
       { length: anzahlBildpaare },
       (_, index) => [
@@ -283,10 +347,84 @@
       ]
     );
 
+
+    // ==========================================
+    // INDIVIDUELLE BILDBESCHREIBUNGEN
+    // Hier können alle Texte bearbeitet werden.
+    // ==========================================
+
+    const altTexte = [
+
+      // Bildpaar 1
+      [
+        "reykjavík harbour 1",
+        "reykjavík harbour 2"
+      ],
+
+      // Bildpaar 2
+      [
+        "indomaret 1",
+        "indomaret 2"
+      ],
+
+      // Bildpaar 3
+      [
+        "sukapura 1",
+        "sukapura 2"
+      ],
+
+      // Bildpaar 4
+      [
+        "enclave shelf 1",
+        "enclave shelf 2"
+      ],
+
+      // Bildpaar 5
+      [
+        "place de la concorde",
+        "rue de rivoli"
+      ],
+
+      // Bildpaar 6
+      [
+        "ourcq jaures housing, lacaton & vassal",
+        "louvre lens, sanaa"
+      ],
+
+      // Bildpaar 7
+      [
+        "am lokdepot, robertneun",
+        "am lokdepot, robertneun"
+      ],
+
+      // Bildpaar 8
+      [
+        "gleisdreieck",
+        "u2"
+      ],
+
+      // Bildpaar 9
+      [
+        "bromo caldera 1",
+        "bromo caldera 2"
+      ],
+
+      // Bildpaar 10
+      [
+        "sabrett hotdogs",
+        "metropolitan transportation authority"
+      ]
+
+    ];
+
+
     // Zuletzt angezeigtes Bildpaar
+
     let aktuellesPaar = -1;
 
+
     // Letztes Bildpaar aus dem Browserspeicher abrufen
+
     try {
       const gespeichert = localStorage.getItem("letztesBildpaar");
 
@@ -297,7 +435,9 @@
       // Funktioniert auch ohne Browserspeicher
     }
 
+
     // Zufälliges neues Bildpaar auswählen
+
     function shufflePhotos() {
       let neuesPaar;
 
@@ -310,14 +450,38 @@
 
       aktuellesPaar = neuesPaar;
 
-      // Linkes und rechtes Foto aktualisieren
-      document.getElementById("foto-1").src =
-        bildpaare[aktuellesPaar][0];
 
-      document.getElementById("foto-2").src =
-        bildpaare[aktuellesPaar][1];
+      // Bilder und Beschreibungen abrufen
+
+      const foto1 = document.getElementById("foto-1");
+      const foto2 = document.getElementById("foto-2");
+
+      const beschreibung1 = document.getElementById("beschreibung-1");
+      const beschreibung2 = document.getElementById("beschreibung-2");
+
+      const texte = altTexte[aktuellesPaar] || ["", ""];
+
+
+      // Bilddateien aktualisieren
+
+      foto1.src = bildpaare[aktuellesPaar][0];
+      foto2.src = bildpaare[aktuellesPaar][1];
+
+
+      // Individuelle Alt-Texte aktualisieren
+
+      foto1.alt = texte[0];
+      foto2.alt = texte[1];
+
+
+      // Sichtbare Hover-Beschreibungen aktualisieren
+
+      beschreibung1.textContent = texte[0];
+      beschreibung2.textContent = texte[1];
+
 
       // Angezeigtes Bildpaar speichern
+
       try {
         localStorage.setItem("letztesBildpaar", aktuellesPaar);
       } catch (error) {
@@ -325,14 +489,19 @@
       }
     }
 
+
     // Beim Laden der Website ein zufälliges Bildpaar auswählen
+
     shufflePhotos();
+
 
     // Bei Rückkehr von der Projektübersicht
     // das Deckblatt überspringen
+
     if (window.location.hash === "#website") {
       openWebsite();
     }
+
   </script>
 
 </body>
