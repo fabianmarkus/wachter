@@ -13,102 +13,137 @@
     body {
       min-height: 100vh;
       margin: 0;
-      padding: 24px clamp(16px, 3vw, 40px);
+      padding: 0 clamp(16px, 3vw, 40px);
       display: flex;
       align-items: center;
       justify-content: center;
       background: #ffffff;
       color: #111111;
+      font-family: "Avenir Medium", Avenir, "Avenir Next", sans-serif;
+      font-size: 16px;
+      font-weight: 500;
     }
 
     .container {
       display: flex;
       flex-direction: column;
       width: 100%;
-      min-height: calc(100vh - 48px);
+      min-height: 100vh;
+    }
+
+    .navigation {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 32px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navigation a,
+    .navigation button,
+    .shuffle {
+      color: inherit;
+      font: inherit;
+      text-decoration: none;
+    }
+
+    .navigation a:hover,
+    .navigation button:hover,
+    .shuffle:hover {
+      text-decoration: none;
+    }
+
+    .navigation button {
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    .projects-menu {
+      position: relative;
+    }
+
+    .submenu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 8px;
+      white-space: nowrap;
     }
 
     .bilder {
-  display: flex;
-  flex: 1 1 auto;
-  gap: 12px;
-  align-items: center;
-  width: 100%;
-}
+      display: flex;
+      flex: 1 1 auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      min-height: 0;
+    }
 
     .bilder img {
       display: block;
       width: calc((100% - 12px) / 2);
+      max-height: 100%;
       height: auto;
       min-width: 0;
       object-fit: contain;
     }
 
-    p {
-      margin: 14px 0 0;
-      font-family: "Avenir Medium", Avenir, "Avenir Next", sans-serif;
-      font-size: 16px;
-      font-weight: 500;
-      text-align: left;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    a:hover {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* Name */
-
-    .titelzeile {
-  margin-top: 0;
-  padding-top: 14px;
-}
-
-    .name {
-      margin: 0;
-      font-size: 32px;
-    }
-
-    /* Adresse und Navigation */
-
-    .kontaktbereich {
+    .footer {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: flex-end;
       gap: 24px;
-      margin-top: 14px;
+      padding: 14px 0 0;
+    }
+
+    .person {
+      min-width: 0;
+    }
+
+    .name {
+      margin: 0 0 14px;
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .name a,
+    .kontakt a {
+      color: inherit;
+      text-decoration: none;
     }
 
     .kontakt {
       margin: 0;
-      font-size: 16px;
+      line-height: 1.4;
     }
 
-    .navigation {
-      display: flex;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      gap: 32px;
+    .shuffle {
+      flex: 0 0 auto;
       margin: 0;
-      font-family: "Avenir Medium", Avenir, "Avenir Next", sans-serif;
-      font-size: 16px;
-      font-weight: 500;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
     }
 
-    /* Landingpage */
+    /* Landingpage mit Deckblatt */
 
     .cover {
       width: 50%;
       max-width: 500px;
-      cursor: pointer;
       padding: 0;
       border: 0;
       background: none;
+      cursor: pointer;
     }
 
     .cover img {
@@ -121,63 +156,147 @@
     [hidden] {
       display: none !important;
     }
+
+    @media (max-width: 600px) {
+      .navigation {
+        gap: 20px;
+      }
+
+      .bilder {
+        gap: 8px;
+      }
+
+      .bilder img {
+        width: calc((100% - 8px) / 2);
+      }
+
+      .footer {
+        gap: 16px;
+      }
+
+      .name {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Landingpage mit festem Deckblatt -->
-
-  <button class="cover" id="landingpage"
-          type="button" aria-label="Website öffnen"
-          onclick="openWebsite()">
+  <!-- Deckblatt: Anklicken, um die Website zu öffnen -->
+  <button
+    class="cover"
+    id="landingpage"
+    type="button"
+    aria-label="Website öffnen"
+    onclick="openWebsite()"
+  >
     <img src="./images/deckblatt.png" alt="Deckblatt">
   </button>
 
-  <!-- Bestehende Website -->
-
+  <!-- Website -->
   <main class="container" id="website" hidden>
 
-    <div class="bilder">
-      <img src="./images/foto-1.jpg" alt="photo 1">
-      <img src="./images/foto-2.jpg" alt="photo 2">
-    </div>
+    <nav class="navigation" aria-label="Navigation">
+      <div class="projects-menu">
+        <button
+          id="projects-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="projects-submenu"
+          onclick="toggleProjects()"
+        >
+          projects
+        </button>
 
-    <div class="titelzeile">
-      <p class="name">
-        <a href="https://www.instagram.com/fabian.markus/"
-           target="_blank" rel="noopener noreferrer">fabian wachter</a>
-      </p>
-    </div>
+        <div class="submenu" id="projects-submenu" hidden>
+          <a href="./commission.html">commission</a>
+          <a href="./projects.html">personal</a>
+        </div>
+      </div>
 
-    <div class="kontaktbereich">
-      <p class="kontakt">
-        viktoria-luise-platz 3<br>
-        10777 berlin<br>
-        <a href="tel:+491741870290">00491741870290</a><br>
-        <a href="mailto:mail@fabianwachter.de">mail@fabianwachter.de</a>
-      </p>
+      <a href="./pdf/portfolio.pdf" target="_blank" rel="noopener noreferrer">
+        portfolio
+      </a>
+      <a href="./pdf/cv.pdf" target="_blank" rel="noopener noreferrer">
+        cv
+      </a>
+    </nav>
 
-      <nav class="navigation" aria-label="Navigation">
-        <a href="./projects.html">projects</a>
-        <a href="./pdf/portfolio.pdf"
-           target="_blank" rel="noopener noreferrer">portfolio</a>
-        <a href="./pdf/cv.pdf"
-           target="_blank" rel="noopener noreferrer">cv</a>
-      </nav>
-    </div>
+    <section class="bilder" aria-label="Fotos">
+      <img id="foto-1" src="./images/foto-1.jpg" alt="photo 1">
+      <img id="foto-2" src="./images/foto-2.jpg" alt="photo 2">
+    </section>
+
+    <footer class="footer">
+      <div class="person">
+        <h1 class="name">
+          <a
+            href="https://www.instagram.com/fabian.markus/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >fabian wachter</a>
+        </h1>
+
+        <p class="kontakt">
+          <a href="tel:+491741870290">00491741870290</a><br>
+          <a href="mailto:mail@fabianwachter.de">mail@fabianwachter.de</a>
+        </p>
+      </div>
+
+      <button class="shuffle" type="button" onclick="shufflePhotos()">
+        shuffle
+      </button>
+    </footer>
 
   </main>
 
   <script>
-    // Bestehende Website öffnen
     function openWebsite() {
       document.getElementById("landingpage").hidden = true;
       document.getElementById("website").hidden = false;
     }
 
-    // Bei Rückkehr von der Projektübersicht
-    // das Deckblatt überspringen
+    function toggleProjects() {
+      const button = document.getElementById("projects-button");
+      const submenu = document.getElementById("projects-submenu");
+      const isOpen = button.getAttribute("aria-expanded") === "true";
+
+      button.setAttribute("aria-expanded", String(!isOpen));
+      submenu.hidden = isOpen;
+    }
+
+    // Weitere Startseitenbilder können hier ergänzt werden.
+    const bilder = [
+      "./images/foto-1.jpg",
+      "./images/foto-2.jpg"
+    ];
+
+    function shufflePhotos() {
+      const foto1 = document.getElementById("foto-1");
+      const foto2 = document.getElementById("foto-2");
+      const gemischt = [...bilder];
+
+      // Zufällige Reihenfolge erzeugen.
+      for (let i = gemischt.length - 1; i > 0; i--) {
+        const zufall = Math.floor(Math.random() * (i + 1));
+        [gemischt[i], gemischt[zufall]] = [gemischt[zufall], gemischt[i]];
+      }
+
+      // Bei einer unveränderten Kombination die Reihenfolge tauschen.
+      if (
+        gemischt.length > 1 &&
+        gemischt[0] === foto1.getAttribute("src") &&
+        gemischt[1] === foto2.getAttribute("src")
+      ) {
+        [gemischt[0], gemischt[1]] = [gemischt[1], gemischt[0]];
+      }
+
+      foto1.src = gemischt[0];
+      foto2.src = gemischt[1];
+    }
+
+    // Bei Rückkehr von der Projektübersicht das Deckblatt überspringen.
     if (window.location.hash === "#website") {
       openWebsite();
     }
