@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="de">
 <head>
@@ -11,9 +12,9 @@
     }
 
     body {
-  min-height: 100vh;
-  margin: 0;
-  padding: 24px clamp(16px, 3vw, 40px);
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px clamp(16px, 3vw, 40px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -25,10 +26,10 @@
     }
 
     .container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: calc(100vh - 48px);
     }
 
     .navigation {
@@ -218,14 +219,16 @@
       <a href="./pdf/portfolio.pdf" target="_blank" rel="noopener noreferrer">
         portfolio
       </a>
+
       <a href="./pdf/cv.pdf" target="_blank" rel="noopener noreferrer">
         cv
       </a>
     </nav>
 
+    <!-- Zufällig ausgewähltes Bildpaar -->
     <section class="bilder" aria-label="Fotos">
-      <img id="foto-1" src="./images/foto-1.jpg" alt="photo 1">
-      <img id="foto-2" src="./images/foto-2.jpg" alt="photo 2">
+      <img id="foto-1" alt="photo 1">
+      <img id="foto-2" alt="photo 2">
     </section>
 
     <footer class="footer">
@@ -252,11 +255,13 @@
   </main>
 
   <script>
+    // Website öffnen
     function openWebsite() {
       document.getElementById("landingpage").hidden = true;
       document.getElementById("website").hidden = false;
     }
 
+    // Projects-Untermenü öffnen und schließen
     function toggleProjects() {
       const button = document.getElementById("projects-button");
       const submenu = document.getElementById("projects-submenu");
@@ -266,37 +271,65 @@
       submenu.hidden = isOpen;
     }
 
-    // Weitere Startseitenbilder können hier ergänzt werden.
-    const bilder = [
-      "./images/foto-1.jpg",
-      "./images/foto-2.jpg"
-    ];
+    // Anzahl der vorhandenen Bildpaare
+    const anzahlBildpaare = 10;
 
-    function shufflePhotos() {
-      const foto1 = document.getElementById("foto-1");
-      const foto2 = document.getElementById("foto-2");
-      const gemischt = [...bilder];
+    // Bildpaare automatisch anhand der Dateinamen erstellen
+    const bildpaare = Array.from(
+      { length: anzahlBildpaare },
+      (_, index) => [
+        `./images/foto-${index + 1}.1.jpg`,
+        `./images/foto-${index + 1}.2.jpg`
+      ]
+    );
 
-      // Zufällige Reihenfolge erzeugen.
-      for (let i = gemischt.length - 1; i > 0; i--) {
-        const zufall = Math.floor(Math.random() * (i + 1));
-        [gemischt[i], gemischt[zufall]] = [gemischt[zufall], gemischt[i]];
+    // Zuletzt angezeigtes Bildpaar
+    let aktuellesPaar = -1;
+
+    // Letztes Bildpaar aus dem Browserspeicher abrufen
+    try {
+      const gespeichert = localStorage.getItem("letztesBildpaar");
+
+      if (gespeichert !== null) {
+        aktuellesPaar = Number(gespeichert);
       }
-
-      // Bei einer unveränderten Kombination die Reihenfolge tauschen.
-      if (
-        gemischt.length > 1 &&
-        gemischt[0] === foto1.getAttribute("src") &&
-        gemischt[1] === foto2.getAttribute("src")
-      ) {
-        [gemischt[0], gemischt[1]] = [gemischt[1], gemischt[0]];
-      }
-
-      foto1.src = gemischt[0];
-      foto2.src = gemischt[1];
+    } catch (error) {
+      // Funktioniert auch ohne Browserspeicher
     }
 
-    // Bei Rückkehr von der Projektübersicht das Deckblatt überspringen.
+    // Zufälliges neues Bildpaar auswählen
+    function shufflePhotos() {
+      let neuesPaar;
+
+      do {
+        neuesPaar = Math.floor(Math.random() * bildpaare.length);
+      } while (
+        neuesPaar === aktuellesPaar &&
+        bildpaare.length > 1
+      );
+
+      aktuellesPaar = neuesPaar;
+
+      // Linkes und rechtes Foto aktualisieren
+      document.getElementById("foto-1").src =
+        bildpaare[aktuellesPaar][0];
+
+      document.getElementById("foto-2").src =
+        bildpaare[aktuellesPaar][1];
+
+      // Angezeigtes Bildpaar speichern
+      try {
+        localStorage.setItem("letztesBildpaar", aktuellesPaar);
+      } catch (error) {
+        // Funktioniert auch ohne Browserspeicher
+      }
+    }
+
+    // Beim Laden der Website ein zufälliges Bildpaar auswählen
+    shufflePhotos();
+
+    // Bei Rückkehr von der Projektübersicht
+    // das Deckblatt überspringen
     if (window.location.hash === "#website") {
       openWebsite();
     }
