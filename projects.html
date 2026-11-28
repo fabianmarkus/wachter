@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="de">
 <head>
@@ -13,8 +12,9 @@
 
     body {
       min-height: 100vh;
+      width: 100%;
       margin: 0;
-      padding: 24px;
+      padding: 24px clamp(16px, 3vw, 40px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -26,20 +26,36 @@
 
     .container {
       width: 100%;
-      max-width: 1000px;
+      min-width: 0;
     }
 
     .projekte {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 48px 12px;
-      align-items: start;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .projekte::-webkit-scrollbar {
+      display: none;
+    }
+
+    .projekt {
+      display: block;
+      flex: 0 0 auto;
+      color: inherit;
+      text-decoration: none;
     }
 
     .projekt img {
       display: block;
-      width: 100%;
-      height: auto;
+      width: auto;
+      height: min(500px, 65vh);
       object-fit: contain;
     }
 
@@ -49,56 +65,117 @@
       text-align: left;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    .titelzeile {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 14px;
     }
 
-    a:hover {
-      color: inherit;
-      text-decoration: none;
+    .seitentitel {
+      margin: 0;
+      font-size: 32px;
     }
 
     .zurueck {
-      grid-column: 3;
-      justify-self: end;
-      align-self: end;
+      flex: 0 0 auto;
       font-size: 16px;
-      padding-bottom: 4px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    @media (hover: hover) {
+      .projekte {
+        scroll-behavior: smooth;
+      }
     }
 
     @media (max-width: 600px) {
-      .projekte {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .zurueck {
-        grid-column: 2;
+      .projekt img {
+        height: min(380px, 55vh);
       }
     }
   </style>
 </head>
 
 <body>
-
   <main class="container">
-
-    <div class="projekte">
-
-      <!-- Projekt 01: Iceland -->
-
-      <a class="projekt" href="./iceland.html">
-        <img src="./images/cover-5.jpg" alt="Iceland">
+    <div class="projekte" aria-label="Projekte">
+      <a class="projekt" href="./iceland.html" data-project="iceland">
+        <img alt="Iceland">
         <p class="projekttitel">iceland</p>
       </a>
 
-      <!-- Weitere Projekte später hier ergänzen -->
+      <a class="projekt" href="./paris.html" data-project="paris">
+        <img alt="Paris">
+        <p class="projekttitel">paris</p>
+      </a>
 
-      <a class="zurueck" href="./index.html#website">back</a>
+      <a class="projekt" href="./usa.html" data-project="usa">
+        <img alt="USA">
+        <p class="projekttitel">usa</p>
+      </a>
 
+      <a class="projekt" href="./berlin.html" data-project="berlin">
+        <img alt="Berlin">
+        <p class="projekttitel">berlin</p>
+      </a>
+
+      <a class="projekt" href="./indonesia.html" data-project="indonesia">
+        <img alt="Indonesia">
+        <p class="projekttitel">indonesia</p>
+      </a>
     </div>
 
+    <div class="titelzeile">
+      <p class="seitentitel">projects</p>
+      <a class="zurueck" href="./index.html#website">back</a>
+    </div>
   </main>
 
+  <script>
+    document.querySelectorAll(".projekt[data-project]").forEach((projekt) => {
+      const name = projekt.dataset.project;
+      const img = projekt.querySelector("img");
+
+      const nummern = Array.from({ length: 21 }, (_, i) => i + 1)
+        .filter((nummer) => !(name === "iceland" && nummer === 10));
+
+      // Kandidaten zufällig mischen
+      for (let i = nummern.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [nummern[i], nummern[j]] = [nummern[j], nummern[i]];
+      }
+
+      function ladeNaechstesBild() {
+        const nummer = nummern.pop();
+
+        if (nummer === undefined) return;
+
+        const bild = new Image();
+
+        bild.onload = () => {
+          img.src = bild.src;
+        };
+
+        bild.onerror = ladeNaechstesBild;
+        bild.src = `./images/${name}-${nummer}.jpg`;
+      }
+
+      ladeNaechstesBild();
+    });
+
+    // Vertikales Mausrad in horizontales Scrollen umwandeln
+    const projekteReihe = document.querySelector(".projekte");
+
+    projekteReihe.addEventListener("wheel", (event) => {
+      if (!event.ctrlKey && Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+        event.preventDefault();
+        projekteReihe.scrollLeft += event.deltaY;
+      }
+    }, {
+      passive: false
+    });
+  </script>
 </body>
 </html>
