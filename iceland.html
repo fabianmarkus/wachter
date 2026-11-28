@@ -112,6 +112,7 @@
       inset: 0;
       z-index: 1000;
       flex-direction: column;
+      gap: 20px;
       padding: 24px clamp(16px, 3vw, 40px);
       background: rgba(0, 0, 0, 0.92);
       color: #ffffff;
@@ -330,9 +331,11 @@
     overlayFoto.addEventListener("load", aktualisiereOverlayBreite);
     window.addEventListener("resize", aktualisiereOverlayBreite);
 
-    // Klick links oder rechts neben dem Bild wechselt das Bild
+    // Klick auf das Bild schließt die Vorschau.
+    // Klick links oder rechts neben dem Bild wechselt das Bild.
     overlayBildbereich.addEventListener("click", (event) => {
       if (event.target === overlayFoto) {
+        schliesseOverlay();
         return;
       }
 
@@ -379,8 +382,16 @@
     overlaySchliessen.addEventListener("click", schliesseOverlay);
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && overlay.classList.contains("aktiv")) {
+      if (!overlay.classList.contains("aktiv")) {
+        return;
+      }
+
+      if (event.key === "Escape") {
         schliesseOverlay();
+      } else if (event.key === "ArrowLeft") {
+        zeigeBild(aktuellerIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        zeigeBild(aktuellerIndex + 1);
       }
     });
   </script>
